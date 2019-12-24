@@ -1,0 +1,14 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>DbFunctions.js</file>
+        <file>Settings.qml</file>
+        <file>qmldir</file>
+        <file>State.js</file>
+        <file>PageDbBrowser.qml</file>
+        <file>PageDbNew.qml</file>
+        <file>SM2.js</file>
+        <file>StringDistance.js</file>
+        <file>PageTestWord.qml</file>
+    </qresource>
+</RCC>
