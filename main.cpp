@@ -3,6 +3,17 @@
 #include <QQmlApplicationEngine>
 #include <QStandardPaths>
 #include <QQuickStyle>
+#include <QSysInfo>
+
+bool isPhone(const QString type) {
+     if (type == "android") {
+         return true;
+     } else if (type == "ios") {
+         return true;
+     } else {
+         return false;
+     }
+}
 
 int main(int argc, char *argv[]) {
   QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
@@ -10,8 +21,11 @@ int main(int argc, char *argv[]) {
   QGuiApplication app(argc, argv);
 
   QQmlApplicationEngine engine;
+
   const QString dbLocation =
-      QStandardPaths::writableLocation(QStandardPaths::DesktopLocation);
+      QStandardPaths::writableLocation(isPhone(QSysInfo::productType())
+                                       ? QStandardPaths::AppDataLocation
+                                       : QStandardPaths::DesktopLocation);
 
   qDebug() << "OfflineStoragePath: " << dbLocation;
 

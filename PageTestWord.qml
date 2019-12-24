@@ -43,7 +43,7 @@ Page {
                     if (item) {
                         stackHolder.replace("PageTestWord.qml", {"stackHolder": stackHolder})
                     } else {
-                        stackHolder.pop()
+                        stackHolder.replace("PageTestDone.qml", {"stackHolder": stackHolder})
                     }
                 }
             }

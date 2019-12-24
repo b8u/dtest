@@ -31,8 +31,7 @@ ApplicationWindow {
                     anchors.fill: parent
                     layoutDirection: Qt.RightToLeft
                     ToolButton {
-                        text: qsTr("⛭")
-                        font.pixelSize: 24
+                        text: qsTr("Settings")
                     }
                 }
             }

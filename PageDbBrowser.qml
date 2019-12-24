@@ -51,7 +51,6 @@ Page {
             ToolButton {
                 text: qsTr("↻")
                 visible: !editMode
-                font.pixelSize: 30
                 onClicked: { updateList() }
             }
         }

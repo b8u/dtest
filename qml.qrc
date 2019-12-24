@@ -10,5 +10,7 @@
         <file>SM2.js</file>
         <file>StringDistance.js</file>
         <file>PageTestWord.qml</file>
+        <file>WordListItem.qml</file>
+        <file>PageTestDone.qml</file>
     </qresource>
 </RCC>
