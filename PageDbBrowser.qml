@@ -28,18 +28,18 @@ Page {
             ToolButton {
                 text: qsTr("Edit")
                 visible: !editMode
-                onClicked: { editMode = true; }
+                onClicked: { editMode = true; wordListItemId.editMode = true }
             }
             ToolButton {
                 text: qsTr("Cancel")
                 visible: editMode
-                onClicked: { editMode = false; }
+                onClicked: { editMode = false; wordListItemId.editMode = true }
             }
             ToolButton {
                 text: qsTr("Remove")
                 visible: editMode
                 onClicked: {
-                    editMode = false
+                    editMode = false; wordListItemId.editMode = true
                     removeSelectedItems()
                 }
             }
@@ -64,36 +64,10 @@ Page {
         model: ListModel{
             id: tasksModelId
         }
-        delegate: ItemDelegate {
-
+        delegate: WordListItem {
+            id: wordListItemId
             width: parent.width
-            height: Material.delegateHeight
-
-            contentItem: RowLayout {
-                anchors.fill: parent
-
-                CheckBox {
-                    visible: editMode
-                    checked: toDie
-                    onCheckedChanged: {
-                        toDie = checked
-                    }
-                }
-                Label {
-                    text: id
-                }
-
-                Column {
-                    Layout.fillWidth: true
-
-                    Label {
-                        text: alien
-                    }
-                    Label {
-                        text: answer
-                    }
-                }
-            }
+            editMode: editMode
         }
     }
 

@@ -13,10 +13,10 @@ Page {
             Layout.alignment: Qt.AlignHCenter
             text: "✓"
             font.pixelSize: 50
-            color: Material.Green
+            color: "green"
         }
         Label {
-Layout.alignment: Qt.AlignHCenter
+            Layout.alignment: Qt.AlignHCenter
             text: "The test is done"
         }
         Button {

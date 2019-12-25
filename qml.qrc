@@ -12,5 +12,6 @@
         <file>PageTestWord.qml</file>
         <file>WordListItem.qml</file>
         <file>PageTestDone.qml</file>
+        <file>PageAddWord.qml</file>
     </qresource>
 </RCC>

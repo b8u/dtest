@@ -13,15 +13,25 @@ import "StringDistance.js" as StrDst
 Page {
     property StackView stackHolder
     property var record
-    // property var wordList: []
+    property var window
 
+    header: ToolBar {
+        RowLayout {
+            anchors.fill: parent
+            ToolButton {
+                text: qsTr("‹")
+                onClicked: stackHolder.pop()
+                font.pixelSize: 24
+            }
+        }
+    }
 
     Popup {
         id: popupId
         width: parent.width
         height: parent.height / 3
         x: parent.x
-        y: parent.y + 2 * parent.height / 3
+        y: parent.height - height
         modal: true
         focus: true
 
@@ -39,9 +49,9 @@ Page {
                 onClicked: {
                     popupId.close()
 
-                    const item = DbFunctions.peekWindowItem(State.db)
-                    if (item) {
-                        stackHolder.replace("PageTestWord.qml", {"stackHolder": stackHolder})
+
+                    if (!window.empty()) {
+                        stackHolder.replace("PageTestWord.qml", {"stackHolder": stackHolder, "window": window})
                     } else {
                         stackHolder.replace("PageTestDone.qml", {"stackHolder": stackHolder})
                     }

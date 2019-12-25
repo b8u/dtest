@@ -18,6 +18,8 @@ ApplicationWindow {
     height: 600
     title: qsTr("Hello World")
 
+    property var testWindow
+
 
     StackView {
         id: stackViewId
@@ -48,12 +50,20 @@ ApplicationWindow {
                 }
                 Button {
                     Layout.alignment: Qt.AlignHCenter
-                    text: "Start test"
+                    text: testWindow.empty() ? "Start test" : "Continue test"
                     onClicked: {
                         DbFunctions.fillWindow(State.db, 3)
-                        stackViewId.push("PageTestWord.qml", { "stackHolder": stackViewId })
+                        stackViewId.push("PageTestWord.qml", { "stackHolder": stackViewId, "window": testWindow })
                     }
                 }
+                Button {
+                    Layout.alignment: Qt.AlignHCenter
+                    text: "New words editor"
+                    onClicked: {
+                        stackViewId.push("PageAddWord.qml", { "stackHolder": stackViewId})
+                    }
+                }
+
                 Rectangle {
                     Layout.fillHeight: true
                     Layout.fillWidth: true
@@ -62,57 +72,12 @@ ApplicationWindow {
         }
     }
 
-    //    Column {
-    //        anchors.fill: parent
-    //        Text {
-    //            id: dbVersionId
-    //        }
-    //        Text {
-    //            text: "State.lastError: " + State.lastError
-    //        }
-
-    //        TableView {
-    //            width: parent.width
-    //            height: parent.height / 3
-    //            columnSpacing: 1
-    //            rowSpacing: 1
-    //            clip: true
-
-    //            model: TableModel {
-    //                TableModelColumn { display: "key" }
-    //                TableModelColumn { display: "value" }
-
-    //                rows: [
-    //                    {
-    //                        "key": "AppDataLocation",
-    //                        "value": StandardPaths.writableLocation(StandardPaths.AppDataLocation)
-    //                    },
-    //                    {
-    //                        "key": "Desctop",
-    //                        "value": StandardPaths.writableLocation(StandardPaths.DesktopLocation)
-    //                    },
-    //                    {
-    //                        "key": "dbfile",
-    //                        "value": Settings.dbfile
-    //                    },
-    //                ]
-    //            }
-
-    //            delegate: Rectangle {
-    //                implicitWidth: 100
-    //                implicitHeight: 20
-    //                border.width: 0
-
-    //                Text {
-    //                    text: display
-    //                }
-    //            }
-    //        }
-    //    }
-
     Component.onCompleted: {
         try {
             State.db = LocalStorage.openDatabaseSync(Settings.dbfile, "", "german tasks", 10000000);
+
+            testWindow = new DbFunctions.Window(State.db)
+
             if (!State.db) { throw "Can't open db"; }
 
             DbFunctions.createTables(State.db);

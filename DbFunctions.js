@@ -1,5 +1,154 @@
 .pragma library
 
+class Window {
+    constructor(db) {
+        this.db = db
+    }
+
+    size(tx) {
+        var res
+
+        const txFunction = function (tx) { res = tx.executeSql("SELECT COUNT(*) AS size FROM 'window'") }
+
+        if (typeof tx === 'object') {
+            txFunction(tx)
+        } else {
+            this.db.readTransaction(txFunction);
+        }
+
+        if (res.rows.length === 1) {
+            const item = res.rows.item(0);
+            return item.size
+        }
+    }
+
+    empty(tx) {
+        return this.size(tx) === 0
+    }
+
+    clear(tx) {
+        if (typeof tx === 'object') {
+            cleanWindowTx(tx)
+        } else {
+            cleanWindow(this.db)
+        }
+    }
+}
+
+class Words {
+    constructor(db) {
+        this.db = db
+    }
+
+    /**
+     * @param   {object} { id: {number}, translation: {string} }
+     * @returns {number} translations.id
+     */
+    translate(translation, tx) {
+        var res = tx.executeSql(`SELECT id FROM translations WHERE translation = ?`, [translation])
+        if (res.rows.length === 1) { // it's a unique field
+            return res.rows.item(0).id
+        } else {
+            res = tx.executeSql(`INSERT INTO translations(translation) VALUES(?);`, [translation])
+            return res.insertId;
+        }
+    }
+
+    /**
+     * @returns [{ translation {string}, id {number} }]  an array of translations
+     */
+    getTranslations(translationTableId, tx) {
+        const res = tx.executeSql(`SELECT translations.translation as translation, translation_table.id_translation as id FROM translation_table LEFT JOIN translations ON translation_table.id_translation = translations.id WHERE translation_table.id = ?;`,
+                                  [translationTableId])
+
+        var translations = []
+        for (var i = 0; i < res.rows.length; ++i) {
+            translations.push(res.rows.item(i))
+        }
+
+        return translations
+    }
+
+    /**
+     * @returns { id {number}, article {string}, name {string} }
+     */
+    getGender(article, tx) {
+        const res = tx.executeSql(`SELECT * FROM "genders" WHERE "article" = ?`, [article])
+        if (res.rows.length === 1) {
+            return res.rows.item(0)
+        }
+    }
+
+    getGenders(tx) {
+        var genders = []
+
+        const f = function(tx) {
+            const res = tx.executeSql(`SELECT * FROM "genders";`)
+            for (var i = 0; i < res.rows.length; ++i) {
+                genders.push(res.rows.item(i))
+            }
+        }
+
+        if (typeof tx === 'object') {
+            f(tx);
+        } else {
+            this.db.transaction(f)
+        }
+
+        return genders
+    }
+
+    /**
+     * @returns [{ id {number}, name {string} }]
+     */
+    getWordTypes(tx) {
+        var types = []
+
+        const f = function(tx) {
+            const res = tx.executeSql(`SELECT * FROM "word_types"`)
+            for (var i = 0; i < res.rows.length; ++i) {
+                types.push(res.rows.item(i))
+            }
+        }
+
+        if (typeof tx === 'object') {
+            f(tx);
+        } else {
+            this.db.transaction(f)
+        }
+
+        return types
+    }
+}
+
+function createNoun(db, germanWord, pluralForm, gender, translations) {
+    const wordsAPI = new Words(db)
+
+    var translation_ids = []
+    db.transaction(tx => {
+                       translations.forEach(translation => {
+                                                translation_ids.push(wordsAPI.translate(translation, tx))
+                                            })
+                   })
+    db.transaction(tx => {
+                       var max = tx.executeSql(`SELECT MAX(id) as max FROM translation_table;`).rows.item(0).max + 1
+
+                       translation_ids.forEach(itraslationId => {
+                                                   console.debug("Inset tr_tb: ", max, itraslationId)
+                                                   tx.executeSql(`INSERT INTO translation_table(id, id_translation) VALUES(?, ?)`, [max, itraslationId])
+                                               })
+
+                       if (germanWord.substr(0, 3).toLowerCase() === gender.article) {
+                           germanWord = germanWord.substr(gender.article.length).trim()
+                       }
+
+                       tx.executeSql(`INSERT INTO words_substantive(gender, singular, plural, id_translation) VALUES(?, ?, ?, ?);`,[
+                                         gender.id, germanWord, pluralForm, max])
+
+                   })
+}
+
+
 function dropTablesTx(tx) {
     tx.executeSql('DROP TABLE IF EXISTS "words";');
     tx.executeSql('DROP TABLE IF EXISTS "window";');

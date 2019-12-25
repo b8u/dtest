@@ -5,53 +5,64 @@ import QtQuick.Layouts 1.14
 ItemDelegate {
     property bool editMode: false
 
-    RowLayout {
+    height: 64
 
-
-        anchors.rightMargin: 16
+    GridLayout {
+        anchors.fill: parent
+        anchors.margins: 8
+        columns: 3
+        rows: 2
 
         CheckBox {
+            Layout.rowSpan: 2
             visible: editMode
-            checked: toDie
-            onCheckedChanged: {
-                toDie = checked
-            }
+            //background: Rectangle { border.color: "red"; border.width: 1 }
         }
 
         Label {
-            anchors.leftMargin: 16
-            text: "id"
-            Layout.alignment: Qt.AlignVCenter
-
-            background: Rectangle{
-                border.color: "purple"
-                border.width: 1
-                color: "transparent"
-            }
+            Layout.rowSpan: 2
+            visible: !editMode
+            text: id
+            anchors.margins: 8
+            //background: Rectangle { border.color: "red"; border.width: 1 }
         }
 
-        Column {
+
+
+
+        Label {
             Layout.fillWidth: true
-            anchors.leftMargin: 16
 
-            Label {
-                anchors.bottom: parent.bottom
-                text: "alien"
-                background: Rectangle {
-                    border.color: "red"
-                    border.width: 1
-                    color: "transparent"
-                }
-            }
+            text: alien
+            font.pixelSize: 16
+            font.bold: true
 
-            Label {
-                text: "answer"
-                background: Rectangle {
-                    border.color: "blue"
-                    border.width: 1
-                    color: "transparent"
-                }
-            }
+            //background: Rectangle { border.color: "red"; border.width: 1 }
+
         }
+
+        Label {
+            text: last_update
+            font.pixelSize: 12
+            font.bold: true
+
+            //background: Rectangle { border.color: "red"; border.width: 1 }
+        }
+
+        Label {
+            text: answer
+            font.pixelSize: 12
+
+            //background: Rectangle { border.color: "red"; border.width: 1 }
+        }
+
+        Label {
+            text: efactor
+
+            font.pixelSize: 12
+
+            //background: Rectangle { border.color: "red"; border.width: 1 }
+        }
+
     }
 }
