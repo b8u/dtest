@@ -13,5 +13,6 @@
         <file>WordListItem.qml</file>
         <file>PageTestDone.qml</file>
         <file>PageAddWord.qml</file>
+        <file>MainPane.qml</file>
     </qresource>
 </RCC>

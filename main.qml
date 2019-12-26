@@ -38,35 +38,42 @@ ApplicationWindow {
                 }
             }
 
-            ColumnLayout {
+            Grid {
+                id: gridId
                 anchors.fill: parent
+                columns: 2
+                spacing: 8
+                padding: 8
 
-                Button {
-                    Layout.alignment: Qt.AlignHCenter
+                readonly property int size: (width - padding * (columns + 1)) / columns
+
+                MainPane  {
+                    size:  gridId.size
+
                     text: "Word list"
                     onClicked: {
                         stackViewId.push("PageDbBrowser.qml", { "stackHolder": stackViewId })
                     }
+
                 }
-                Button {
-                    Layout.alignment: Qt.AlignHCenter
+
+
+                MainPane {
+                    size:  gridId.size
                     text: testWindow.empty() ? "Start test" : "Continue test"
                     onClicked: {
                         DbFunctions.fillWindow(State.db, 3)
                         stackViewId.push("PageTestWord.qml", { "stackHolder": stackViewId, "window": testWindow })
                     }
                 }
-                Button {
-                    Layout.alignment: Qt.AlignHCenter
+
+
+                MainPane {
+                    size:  gridId.size
                     text: "New words editor"
                     onClicked: {
                         stackViewId.push("PageAddWord.qml", { "stackHolder": stackViewId})
                     }
-                }
-
-                Rectangle {
-                    Layout.fillHeight: true
-                    Layout.fillWidth: true
                 }
             }
         }
