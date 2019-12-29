@@ -7,12 +7,14 @@ Pane {
 
     property alias text: labelId.text
     signal clicked
+    signal released
+    signal pressed
     property real size
 
     width:  size
     height: size
 
-    Material.elevation: 6
+    Material.elevation: 2
 
     Label {
         id: labelId
@@ -23,7 +25,17 @@ Pane {
     MouseArea {
         id: mouseAreaId
         anchors.fill: parent
+
+        onPressed: {
+            rootId.Material.elevation = 8
+        }
+
         onClicked: rootId.clicked()
+
+        onReleased: {
+            rootId.released();
+            rootId.Material.elevation = 2
+        }
 
     }
 
