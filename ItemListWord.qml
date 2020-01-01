@@ -9,10 +9,18 @@ Item {
     width: 400
     height: 88
 
-    readonly property bool debugBoxes: false
+    property bool editMode: false
 
     property alias header:  titleId.text
-    property alias secondary: secondaryTextId
+    property alias secondary: secondaryTextId.text
+    property alias mark: markId.text
+    property alias checkState: checkboxId.checkState
+    property real progress: -2.5
+
+
+    readonly property bool debugBoxes: false
+    readonly property real leftWidth: 40
+    readonly property real rightWidth: 24
 
     Rectangle {
         border.color: "cyan"
@@ -20,38 +28,50 @@ Item {
         border.width: debugBoxes ? 1 : 0
 
         Rectangle {
-            anchors.leftMargin: 16
+            anchors.topMargin: 16
+            anchors.bottomMargin: 16
             border.color: "black"
             anchors.fill: parent
-            anchors.margins: 16
             border.width: debugBoxes ? 1 : 0
 
-            Row {
+            RowLayout {
                 anchors.fill: parent
+                spacing: 0
 
                 Rectangle {
-                    id: picId
-                    border.color: Material.accentColor
-                    border.width: 4
                     width: 40
-                    height: 40
-                    radius: width / 2
+                    Layout.fillHeight: true
+                    Layout.leftMargin: 16
 
-                    // 1.1 - 2.5
+                    Rectangle {
+                        id: picId
+                        border.color: Material.accentColor
+                        border.width: 4
+                        width: 40
+                        height: 40
+                        radius: width / 2
 
-                    Label {
-                        anchors.centerIn: parent
-                        text: "2.5"
-                        font.weight: Font.Medium
-                        font.pixelSize: 16
-                        color: "gray"
 
+
+                        // 1.1 - 2.5
+
+                        Label {
+                            anchors.centerIn: parent
+                            text: progress
+                            font.weight: Font.Medium
+                            font.pixelSize: 16
+                            color: "gray"
+
+                        }
                     }
+                    border.color: "gray"
+                    border.width: debugBoxes ? 1 : 0
+
                 }
 
                 Rectangle {
-                    x: picId.x + picId.width
-                    width: parent.width - picId.width - checkboxId.width
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
                     border.color: "green"
                     border.width: debugBoxes ? 1 : 0
                     height: parent.height
@@ -77,6 +97,7 @@ Item {
                                 }
                             }
                             Label {
+                                id: markId
                                 text: "substantiv"
                                 height: parent.height
                                 width: parent.width - titleId.width
@@ -110,20 +131,29 @@ Item {
                         }
                     }
                 }
-                CheckBox {
-                    id: checkboxId
-                    checked: true
-                    y: parent.y + 8
-                    anchors.right: parent.right
-                    height: 24
-                    width: 24
 
-                    background: Rectangle {
-                        border.color: "red"
-                        border.width: debugBoxes ? 1 : 0
+                Rectangle {
+                    width: 24
+                    Layout.fillHeight: true
+                    border.color: "gray"
+                    Layout.rightMargin: 16
+                    border.width: debugBoxes ? 1 : 0
+                    visible: editMode
+
+
+                    CheckBox {
+                        id: checkboxId
+                        checked: true
+                        y: parent.y + 8
+                        height: 24
+                        width: 24
+
+                        background: Rectangle {
+                            border.color: "red"
+                            border.width: debugBoxes ? 1 : 0
+                        }
                     }
                 }
-
             }
         }
     }

@@ -114,12 +114,34 @@ class Words {
         if (typeof tx === 'object') {
             f(tx);
         } else {
-            this.db.transaction(f)
+            this.db.readTransaction(f)
         }
 
         return types
     }
+
+    getNouns(tx) {
+        var words = []
+        const self = this;
+        const f = function(tx) {
+            const res = tx.executeSql(`SELECT w.id, w.type_word, s.gender, s.singular, s.plural, s.id_translation, sm2.efactor, sm2.interval, sm2.last_answer FROM words_new AS w INNER JOIN words_substantive AS s ON s.id = w.id_word LEFT JOIN sm2 ON sm2.word_id = w.id WHERE w.type_word = 1;`)
+            for (var i = 0; i < res.rows.length; ++i) {
+                var item = res.rows.item(i)
+                item.translations = self.getTranslations(item.id_translation, tx)
+                words.push(item)
+            }
+        }
+
+        if (typeof tx === 'object') {
+            f(tx);
+        } else {
+            this.db.readTransaction(f)
+        }
+
+        return words
+    }
 }
+
 
 function createNoun(db, germanWord, pluralForm, gender, translations) {
     const wordsAPI = new Words(db)
@@ -134,7 +156,6 @@ function createNoun(db, germanWord, pluralForm, gender, translations) {
                        var max = tx.executeSql(`SELECT MAX(id) as max FROM translation_table;`).rows.item(0).max + 1
 
                        translation_ids.forEach(itraslationId => {
-                                                   console.debug("Inset tr_tb: ", max, itraslationId)
                                                    tx.executeSql(`INSERT INTO translation_table(id, id_translation) VALUES(?, ?)`, [max, itraslationId])
                                                })
 
@@ -142,8 +163,10 @@ function createNoun(db, germanWord, pluralForm, gender, translations) {
                            germanWord = germanWord.substr(gender.article.length).trim()
                        }
 
-                       tx.executeSql(`INSERT INTO words_substantive(gender, singular, plural, id_translation) VALUES(?, ?, ?, ?);`,[
+                       const res = tx.executeSql(`INSERT INTO words_substantive(gender, singular, plural, id_translation) VALUES(?, ?, ?, ?);`,[
                                          gender.id, germanWord, pluralForm, max])
+
+                       tx.executeSql(`INSERT INTO sm2(word_id) VALUES(?);`, [res.insertId])
 
                    })
 }

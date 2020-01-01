@@ -11,15 +11,34 @@ Pane {
     signal pressed
     property real size
 
+    readonly property real animationDuration: 200
+    readonly property int minElevation: 1
+    readonly property int maxElevation: 8
+
     width:  size
     height: size
 
-    Material.elevation: 2
+    Material.elevation: 1
 
     Label {
         id: labelId
         text: "New words editor"
-        anchors.centerIn: parent
+        anchors.leftMargin: 16
+        anchors.rightMargin: 24
+
+
+        font.pixelSize: 24
+        width: parent.width - (x - parent.x) - 24
+        wrapMode: Text.WordWrap
+        maximumLineCount: 2
+        color: "#232F34"
+    }
+
+    NumberAnimation on Material.elevation {
+        running: mouseAreaId.pressed
+        from: minElevation
+        to: maxElevation
+        duration: animationDuration
     }
 
     MouseArea {
@@ -27,14 +46,14 @@ Pane {
         anchors.fill: parent
 
         onPressed: {
-            rootId.Material.elevation = 8
+            rootId.Material.elevation = maxElevation
         }
 
         onClicked: rootId.clicked()
 
         onReleased: {
             rootId.released();
-            rootId.Material.elevation = 2
+            rootId.Material.elevation = minElevation
         }
 
     }

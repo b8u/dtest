@@ -72,7 +72,15 @@ ApplicationWindow {
                     size:  gridId.size
                     text: "New words editor"
                     onClicked: {
-                        stackViewId.push("PageAddWord.qml", { "stackHolder": stackViewId})
+                        stackViewId.push("PageAddWord.qml", { "stackHolder": stackViewId })
+                    }
+                }
+
+                MainPane {
+                    size:  gridId.size
+                    text: "New word list"
+                    onClicked: {
+                        stackViewId.push("PageWordList.qml", { "stackHolder": stackViewId })
                     }
                 }
             }

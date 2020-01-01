@@ -8,7 +8,6 @@ import "State.js" as State
 import "DbFunctions.js" as DbFunctions
 
 Page {
-    property StackView stackHolder
     property var words: new DbFunctions.Words(State.db)
 
     readonly property int noun: 0
@@ -27,7 +26,7 @@ Page {
 
             ToolButton {
                 text: qsTr("‹")
-                onClicked: stackHolder.pop()
+                onClicked: stackViewId.pop()
                 font.pixelSize: 24
             }
 
@@ -54,7 +53,7 @@ Page {
                     const gender = wordGenderModelId.get(wordGenderId.currentIndex)
 
                     DbFunctions.createNoun(State.db, singular, plural, gender, translations)
-                    stackHolder.pop()
+                    stackViewId.pop()
                 }
             }
         }

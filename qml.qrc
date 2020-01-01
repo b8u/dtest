@@ -15,5 +15,7 @@
         <file>PageAddWord.qml</file>
         <file>MainPane.qml</file>
         <file>ItemListWord.qml</file>
+        <file>CircleProgressBar.qml</file>
+        <file>PageWordList.qml</file>
     </qresource>
 </RCC>
