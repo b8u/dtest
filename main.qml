@@ -63,7 +63,7 @@ ApplicationWindow {
                     text: testWindow.empty() ? "Start test" : "Continue test"
                     onClicked: {
                         DbFunctions.fillWindow(State.db, 3)
-                        stackViewId.push("PageTestWord.qml", { "stackHolder": stackViewId, "window": testWindow })
+                        stackViewId.push("PageTestWord.qml", { "window": testWindow })
                     }
                 }
 

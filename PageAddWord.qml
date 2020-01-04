@@ -15,6 +15,12 @@ Page {
     readonly property int adj : 2
     readonly property int adv : 3
 
+    readonly property bool debugBorders: true
+
+
+    //width: 400
+    //height: 800
+
     property int mode: noun
 
 
@@ -93,11 +99,12 @@ Page {
         }
     }
 
-    Rectangle {
-        border.width: 0
-        border.color: "green"
+
+    ColumnLayout {
         anchors.fill: parent
-        anchors.margins: 16
+
+        Rectangle {
+            Layout.fillWidth: true
         GridLayout {
             anchors.fill: parent
             columns: 2
@@ -105,6 +112,7 @@ Page {
             Label {
                 text: "Часть речи"
             }
+
             ComboBox {
                 Layout.minimumWidth: parent.width * 0.5
                 Layout.alignment: Qt.AlignRight
@@ -147,79 +155,107 @@ Page {
                 currentIndex: 0
             }
 
+
+        }
+}
+        TextField {
+            Layout.fillWidth: true
+
+            id: germanWordId
+            placeholderText: "German word here"
+
+            onTextChanged: {
+                const article = germanWordId.text.substring(0, 3)
+                console.debug("Article: ", article)
+            }
+        }
+
+        RowLayout {
+            Layout.fillWidth: true
+
             TextField {
-                Layout.columnSpan: 2
+                id: pluralWordId
+                placeholderText: "Форма множественного числа"
+                readOnly: !hasPluralId.checked
                 Layout.fillWidth: true
-
-                id: germanWordId
-                placeholderText: "German word here"
-
-                onTextChanged: {
-                    const article = germanWordId.text.substring(0, 3)
-                    console.debug("Article: ", article)
-                }
             }
 
-            RowLayout {
-                Layout.columnSpan: 2
-                Layout.fillWidth: true
+            CheckBox {
+                id: hasPluralId
+                checked: true
 
-                TextField {
-                    id: pluralWordId
-                    placeholderText: "Форма множественного числа"
-                    readOnly: !hasPluralId.checked
-                    Layout.fillWidth: true
-                }
-
-                CheckBox {
-                    id: hasPluralId
-                    checked: true
-
-                    onCheckStateChanged: {
-                        pluralWordId.readOnly = !checked
-                    }
-                }
-            }
-
-            ListView {
-                id: translationsId
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                Layout.columnSpan: 2
-
-                model: ListModel {
-                    id: translationsModelId
-                    Component.onCompleted: {
-                        append({ "translation": "Перевод1" })
-                        append({ "translation": "Перевод2" })
-                    }
-                }
-
-                delegate: ItemDelegate {
-                    height: 48
-                    width: parent.width
-
-                    Label {
-                        anchors.topMargin: 16
-                        anchors.fill: parent
-                        text: translation
-                    }
-                }
-
-            }
-
-            Button {
-                Layout.columnSpan: 2
-                Layout.alignment: Qt.AlignRight
-
-                text: "Добавить перевод"
-
-                onClicked: {
-                    popupId.open()
+                onCheckStateChanged: {
+                    pluralWordId.readOnly = !checked
                 }
             }
         }
+
+        Label {
+            Layout.columnSpan: 2
+            Layout.fillWidth: true
+            Layout.topMargin: 16
+            Layout.bottomMargin: 16
+            text: qsTr("Варианты переводов по приоритету")
+            font.weight: Font.Normal
+            font.pixelSize: 14
+            background: Rectangle {
+                border.color: "red"
+                border.width: debugBorders ? 1 : 0
+            }
+
+
+        }
+
+        ListView {
+            id: translationsId
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            model: ListModel {
+                id: translationsModelId
+                Component.onCompleted: {
+                    append({ "translation": "Перевод1" })
+                    append({ "translation": "Перевод2" })
+                }
+            }
+
+            delegate: SwipeDelegate {
+                height: 48
+                width: parent.width
+                text: translation
+                //Label {
+                //    anchors.topMargin: 16
+                //    font.pixelSize: 16
+                //    anchors.fill: parent
+                //    text: translation
+                //}
+
+                swipe.right: Label {
+                    text: "Удалить"
+                    verticalAlignment: Label.AlignVCenter
+                    padding: 12
+                    color: "white"
+                    height: parent.height
+                    anchors.right: parent.right
+                    background: Rectangle {
+                        color: "red"
+                    }
+                }
+            }
+
+        }
+
+        Button {
+            Layout.alignment: Qt.AlignRight
+
+            text: "Добавить перевод"
+
+            onClicked: {
+                popupId.open()
+            }
+        }
     }
+
 
     Component.onCompleted: {
         wordTypeId.model = words.getWordTypes()
