@@ -10,7 +10,20 @@ import "SM2.js" as SM2
 import "StringDistance.js" as StrDst
 
 Page {
-    property var record
+    property var record:
+        { "id"             : 1
+        , "type_word"      : 1
+        , "gender"         : 1
+        , "singular"       : "Hund"
+        , "plural"         : "Hunde"
+        , "id_translation" : 1
+        , "efactor"        : 2.5
+        , "interval"       : 1
+        , "last_answer"    : ""  // Хз что это
+        , "translations"   : [ 'собака'
+                             , 'пёс'
+                             ]
+        }
     property var window
 
     //width: 400
@@ -38,19 +51,18 @@ Page {
 
         ColumnLayout {
             anchors.fill: parent
-            Label {
-                id: popupLabelId
-                wrapMode: Label.WordWrap
-                Layout.fillWidth: true
+            WordCard {
                 Layout.fillHeight: true
+                Layout.fillWidth: true
+
+                word: record
             }
+
             Button {
                 text: "Next"
                 Layout.fillWidth: true
                 onClicked: {
                     popupId.close()
-
-
                     if (!window.empty()) {
                         stackViewId.replace("PageTestWord.qml", { "window": window })
                     } else {

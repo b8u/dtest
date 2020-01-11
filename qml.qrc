@@ -17,5 +17,6 @@
         <file>ItemListWord.qml</file>
         <file>PageWordList.qml</file>
         <file>TestNoun.qml</file>
+        <file>WordCard.qml</file>
     </qresource>
 </RCC>
